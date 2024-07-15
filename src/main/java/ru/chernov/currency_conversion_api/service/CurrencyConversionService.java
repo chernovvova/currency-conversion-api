@@ -62,6 +62,7 @@ public class CurrencyConversionService {
                 break;
             case "quota-reached":
                 log.error("Account has reached the the number of requests");
+                break;
             default:
                 log.error("Unknown error");
                 break;
