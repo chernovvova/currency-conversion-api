@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: currency-conversion-api
+  datasource:
+    url: jdbc:postgresql://localhost:5432/currency_conversion_rates
+    username: postgres
+    password: pass
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  liquibase:
+    changeLog: classpath:/db/changelog/db.changelog-master.xml
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    drop-first: false
+
+exchange-rate-api:
+  key: 15d41218e6bffb5895a2a939
+  url: https://v6.exchangerate-api.com/v6
