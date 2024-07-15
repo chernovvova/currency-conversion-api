@@ -47,6 +47,24 @@ public class CurrencyConversionService {
     }
 
     public void logResponseError(String errorType) {
-        
+        switch (errorType) {
+            case "unsupported-code":
+                log.error("Supplied currency code is not supported");
+                break;
+            case "malformed-request":
+                log.error("Wrong request structure");
+                break;
+            case "invalid-key":
+                log.error("API key is not valid");
+                break;
+            case "inactive-account":
+                log.error("Email address is not confirmed");
+                break;
+            case "quota-reached":
+                log.error("Account has reached the the number of requests");
+            default:
+                log.error("Unknown error");
+                break;
+        }
     }
 }
