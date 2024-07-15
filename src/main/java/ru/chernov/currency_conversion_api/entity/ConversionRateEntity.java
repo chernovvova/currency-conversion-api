@@ -1,0 +1,33 @@
+package ru.chernov.currency_conversion_api.entity;
+
+import java.math.BigDecimal;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
+import jakarta.persistence.Table;
+import lombok.Data;
+
+@Entity
+@Data
+@Table(name="conversion_rates")
+@IdClass(ConversionRateId.class)
+public class ConversionRateEntity {
+    @Column(name="base_code")
+    private String baseCode;
+
+    @Id
+    @Column
+    private String targetCode;
+
+    @Id
+    @Column
+    private Long timeLastUpdate;
+
+    @Column
+    private Long timeNextUpdate;
+
+    @Column
+    private BigDecimal conversionRate;
+}
