@@ -21,22 +21,23 @@ import ru.chernov.currency_conversion_api.repository.ConversionRateRepository;
 public class CurrencyConversionService {
     private final int NUMBERS_SCALE = 4;
 
-    private final ExchangeRateAPIClient conversionRateClient;
+    private final ExchangeRateAPIClient exchangeRateAPIClient;
     private final ConversionRateRepository conversionRateRepository;
 
     public ConversionRateAPIResponse getConversionRates() {
+        log.info("Getting currency rates from API");
         ConversionRateAPIResponse response;
         try {
-            response = conversionRateClient.getConversionRates();
+            response = exchangeRateAPIClient.getConversionRates();
             log.info("API response: {}", response);
         } 
         catch(Exception exception) {
-            log.error("Error calling API", exception);
+            log.error("Error calling API: ", exception);
             throw new RuntimeException("Error calling API", exception);
         }
         
         log.info("API response result: {}", response.getResult());
-        if(response.getResult().equalsIgnoreCase("success")) {
+        if(response.getResult().equals("success")) {
             log.info("Last update: {}", response.getTimeLastUpdate());
             log.info("Next update: {}", response.getTimeNextUpdate());
             log.info("Base code: {}", response.getBaseCode());
