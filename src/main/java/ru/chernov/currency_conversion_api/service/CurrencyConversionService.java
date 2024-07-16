@@ -1,6 +1,7 @@
 package ru.chernov.currency_conversion_api.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,8 @@ import ru.chernov.currency_conversion_api.repository.ConversionRateRepository;
 @Slf4j
 @AllArgsConstructor
 public class CurrencyConversionService {
+    private final int DIVIDE_SCALE = 6;
+
     private final ConversionRateClient conversionRateClient;
     private final ConversionRateRepository conversionRateRepository;
 
@@ -125,6 +128,18 @@ public class CurrencyConversionService {
 
     //convert code -> USD
     public BigDecimal backwardConvertion(String code, Long time, BigDecimal amount) {
-        return amount;
+        List<ConversionRateEntity> request = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
+        
+        if(request.isEmpty()) {
+            ConversionRateResponse entities = getConversionRates();
+            saveConversionRates(entities);
+            
+            request = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
+        }
+        
+        BigDecimal result = request.get(0).getConversionRate();
+        result = amount.divide(result, DIVIDE_SCALE, RoundingMode.HALF_UP);
+        
+        return result;
     }
 }
