@@ -124,7 +124,8 @@ public class CurrencyConversionService {
         
         BigDecimal result = request.get(0).getConversionRate();
         result = amount.multiply(result);
-    
+        result = result.setScale(NUMBERS_SCALE, RoundingMode.HALF_UP);
+
         log.info("{} USD converted to {} {}", amount, result, code);
 
         return result;
@@ -143,7 +144,8 @@ public class CurrencyConversionService {
         
         BigDecimal result = request.get(0).getConversionRate();
         result = amount.divide(result, NUMBERS_SCALE, RoundingMode.HALF_UP);
-
+        result = result.setScale(NUMBERS_SCALE, RoundingMode.HALF_UP);
+        
         log.info("{} {} converted to {} USD", amount, code, result);
         
         return result;
