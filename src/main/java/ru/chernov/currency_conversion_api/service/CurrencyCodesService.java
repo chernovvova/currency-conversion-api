@@ -1,6 +1,7 @@
 package ru.chernov.currency_conversion_api.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -32,8 +33,8 @@ public class CurrencyCodesService {
         log.info("API response result: {}", response.getResult());
 
         if(response.getResult().equals("success")) {
-            for(Map.Entry<String, String> entry : response.getSupportedCurrencies().entrySet()) {
-                log.info("Code: {}\t Name: {}", entry.getKey(), entry.getValue());
+            for(List<String> currency : response.getSupportedCurrencies()) {
+                log.info("Code: {}\t Name: {}", currency.get(0), currency.get(1));
             }
         }
         else {

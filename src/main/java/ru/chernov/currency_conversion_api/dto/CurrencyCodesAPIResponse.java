@@ -1,7 +1,6 @@
 package ru.chernov.currency_conversion_api.dto;
 
-
-
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,7 +15,7 @@ public class CurrencyCodesAPIResponse {
     private String result;
 
     @JsonProperty("supported_codes")
-    private Map<String, String> supportedCurrencies;
+    private List<List<String>> supportedCurrencies;
 
     @JsonProperty("error_type")
     private String errorType;
