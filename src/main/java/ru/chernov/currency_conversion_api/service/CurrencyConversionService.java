@@ -83,4 +83,33 @@ public class CurrencyConversionService {
             conversionRateRepository.save(entity);
         }
     }
+
+    public BigDecimal convertCurrency(String baseCode, String targetCode, BigDecimal amount, Long time) {
+        BigDecimal result = new BigDecimal(1);
+        result = result.multiply(amount);
+
+        // USD -> target: result = amount * conv_rate 
+        // target -> USD: result = amount / conv_rate
+        // base -> target, base -> USD -> target: result = amount / conv_rate1 * conv_rate2
+        if(baseCode.equals("USD")) {
+            result = forwardConvertion(targetCode, time, result);
+        }
+        else if(targetCode.equals("USD")) {
+            result = backwardConvertion(baseCode, time, result);
+        }
+        else {
+            result = backwardConvertion(baseCode, time, result);
+            result = forwardConvertion(targetCode, time, result);
+        }
+
+        return result;
+    }
+
+    public BigDecimal forwardConvertion(String code, Long time, BigDecimal amount) {
+        return amount;
+    }
+
+    public BigDecimal backwardConvertion(String code, Long time, BigDecimal amount) {
+        return amount;
+    }
 }
