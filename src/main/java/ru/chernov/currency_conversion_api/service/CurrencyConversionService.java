@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.chernov.currency_conversion_api.client.ConversionRateClient;
 import ru.chernov.currency_conversion_api.dto.ConversionRateResponse;
+import ru.chernov.currency_conversion_api.entity.ConversionRateEntity;
 import ru.chernov.currency_conversion_api.repository.ConversionRateRepository;
 
 @Service
@@ -66,6 +67,20 @@ public class CurrencyConversionService {
             default:
                 log.error("Unknown error");
                 break;
+        }
+    }
+
+    public void saveConversionRates(ConversionRateResponse response) {
+        for(Map.Entry<String, BigDecimal> entry : response.getConversionRates().entrySet()) {
+            ConversionRateEntity entity = new ConversionRateEntity();
+
+            entity.setBaseCode(response.getBaseCode());
+            entity.setTargetCode(entry.getKey());
+            entity.setTimeLastUpdate(response.getTimeLastUpdate());
+            entity.setTimeNextUpdate(response.getTimeNextUpdate());
+            entity.setConversionRate(entry.getValue());
+
+            conversionRateRepository.save(entity);
         }
     }
 }
