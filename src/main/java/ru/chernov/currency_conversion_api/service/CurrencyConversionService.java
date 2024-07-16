@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.chernov.currency_conversion_api.client.ConversionRateClient;
+import ru.chernov.currency_conversion_api.client.ExchangeRateAPIClient;
 import ru.chernov.currency_conversion_api.dto.ConversionRateAPIResponse;
 import ru.chernov.currency_conversion_api.dto.ConversionRateUIResponse;
 import ru.chernov.currency_conversion_api.entity.ConversionRateEntity;
@@ -21,7 +21,7 @@ import ru.chernov.currency_conversion_api.repository.ConversionRateRepository;
 public class CurrencyConversionService {
     private final int NUMBERS_SCALE = 4;
 
-    private final ConversionRateClient conversionRateClient;
+    private final ExchangeRateAPIClient conversionRateClient;
     private final ConversionRateRepository conversionRateRepository;
 
     public ConversionRateAPIResponse getConversionRates() {
