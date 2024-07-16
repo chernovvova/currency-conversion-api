@@ -156,7 +156,6 @@ public class CurrencyConversionService {
         return result;
     }
 
-
     //convert code -> USD
     public BigDecimal backwardConvertion(BigDecimal conversionRate, BigDecimal amount) {
         BigDecimal result = conversionRate;

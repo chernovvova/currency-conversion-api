@@ -16,6 +16,9 @@ spring:
     password: ${spring.datasource.password}
     drop-first: false
 
+server:
+    port: 8080
+
 exchange-rate-api:
   key: 15d41218e6bffb5895a2a939
   url: https://v6.exchangerate-api.com/v6
