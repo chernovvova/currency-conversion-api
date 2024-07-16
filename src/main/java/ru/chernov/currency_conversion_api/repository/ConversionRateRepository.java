@@ -12,7 +12,7 @@ import ru.chernov.currency_conversion_api.entity.ConversionRateId;
 
 @Repository
 public interface ConversionRateRepository extends JpaRepository<ConversionRateEntity, ConversionRateId>{
-    @Query(value = "SELECT * FROM conversion_rate WHERE target_code = :targetCode AND :time BETWEEN time_last_update AND time_next_update", 
+    @Query(value = "SELECT * FROM conversion_rates WHERE target_code = :targetCode AND :time BETWEEN time_last_update AND time_next_update", 
             nativeQuery = true)
     List<ConversionRateEntity> findByTargetCodeAndTimeInterval(@Param("targetCode")String targetCode, @Param("time") Long time);
 } 
