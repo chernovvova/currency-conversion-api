@@ -20,4 +20,5 @@ public class CurrencyConversionController {
     public ConversionRateUIResponse convertCurrency(@RequestParam String from, @RequestParam String to, @RequestParam BigDecimal amount) {
         return conversionRateService.convertCurrency(from, to, amount, Instant.now().toEpochMilli() / 1000L);
     }
+
 }
