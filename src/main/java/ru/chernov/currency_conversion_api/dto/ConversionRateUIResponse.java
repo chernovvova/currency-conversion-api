@@ -18,6 +18,9 @@ public class ConversionRateUIResponse {
     @JsonProperty("time_next_update_unix")
     private Long timeNextUpdate;
 
+    @JsonProperty("current_unix_time")
+    private Long currentTime;
+
     @JsonProperty("base_code")
     private String baseCode;
     

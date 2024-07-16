@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.chernov.currency_conversion_api.client.ConversionRateClient;
-import ru.chernov.currency_conversion_api.dto.ConversionRateResponse;
+import ru.chernov.currency_conversion_api.dto.ConversionRateAPIResponse;
+import ru.chernov.currency_conversion_api.dto.ConversionRateUIResponse;
 import ru.chernov.currency_conversion_api.entity.ConversionRateEntity;
 import ru.chernov.currency_conversion_api.repository.ConversionRateRepository;
 
@@ -23,8 +24,8 @@ public class CurrencyConversionService {
     private final ConversionRateClient conversionRateClient;
     private final ConversionRateRepository conversionRateRepository;
 
-    public ConversionRateResponse getConversionRates() {
-        ConversionRateResponse response;
+    public ConversionRateAPIResponse getConversionRates() {
+        ConversionRateAPIResponse response;
         try {
             response = conversionRateClient.getConversionRates();
             log.info("API response: {}", response);
@@ -74,7 +75,7 @@ public class CurrencyConversionService {
         }
     }
 
-    public void saveConversionRates(ConversionRateResponse response) {
+    public void saveConversionRates(ConversionRateAPIResponse response) {
         for(Map.Entry<String, BigDecimal> entry : response.getConversionRates().entrySet()) {
             ConversionRateEntity entity = new ConversionRateEntity();
 
@@ -88,65 +89,79 @@ public class CurrencyConversionService {
         }
     }
 
-    public BigDecimal convertCurrency(String baseCode, String targetCode, BigDecimal amount, Long time) {
-        BigDecimal result = new BigDecimal(1);
-        result = result.multiply(amount);
+    public ConversionRateUIResponse convertCurrency(String baseCode, String targetCode, BigDecimal amount, Long time) {
+        ConversionRateUIResponse response = new ConversionRateUIResponse();
+        response.setBaseCode(baseCode);
+        response.setTargetCode(targetCode);
+        response.setCurrentTime(time);
+        response.setAmount(amount);
+
         log.info("Converting {} {} to {}", amount, baseCode, targetCode);
 
+        ConversionRateEntity actualConversionRate;
+        BigDecimal result;
         // USD -> target: result = amount * conv_rate 
         // target -> USD: result = amount / conv_rate
         // base -> target, base -> USD -> target: result = amount / conv_rate1 * conv_rate2
         if(baseCode.equals("USD")) {
-            result = forwardConvertion(targetCode, time, result);
+            actualConversionRate = findActualConvesionRate(targetCode, time);
+            result = forwardConvertion(actualConversionRate.getConversionRate(), amount);
+
+            log.info("{} USD converted to {} {}", amount, result, targetCode);
         }
         else if(targetCode.equals("USD")) {
-            result = backwardConvertion(baseCode, time, result);
+            actualConversionRate = findActualConvesionRate(baseCode, time);
+            result = backwardConvertion(actualConversionRate.getConversionRate(), amount);
+
+            log.info("{} {} converted to {} USD", amount, baseCode, result);
         }
         else {
-            result = backwardConvertion(baseCode, time, result);
-            result = forwardConvertion(targetCode, time, result);
+            actualConversionRate = findActualConvesionRate(baseCode, time);
+            result = backwardConvertion(actualConversionRate.getConversionRate(), amount);
+
+            log.info("{} {} converted to {} USD", amount, baseCode, result);
+
+            actualConversionRate = findActualConvesionRate(targetCode, time);
+            result = forwardConvertion(actualConversionRate.getConversionRate(), result);
+
+            log.info("{} USD converted to {} {}", amount, result, targetCode);
         }
 
-        log.info("Conversion result: {} {}", result, targetCode);
-        return result;
-    }
+        response.setResult(result);
+        response.setTimeLastUpdate(actualConversionRate.getTimeLastUpdate());
+        response.setTimeNextUpdate(actualConversionRate.getTimeNextUpdate());
 
-    //covert USD -> code
-    public BigDecimal forwardConvertion(String code, Long time, BigDecimal amount) {
+        log.info("Conversion result: {} {}", result, targetCode);
+        return response;
+    }
+    
+    public ConversionRateEntity findActualConvesionRate(String code, Long time) {
         List<ConversionRateEntity> request = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
         
         if(request.isEmpty()) {
-            ConversionRateResponse entities = getConversionRates();
+            ConversionRateAPIResponse entities = getConversionRates();
             saveConversionRates(entities);
             
             request = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
         }
         
-        BigDecimal result = request.get(0).getConversionRate();
+        return request.get(0);
+    }
+    //covert USD -> code
+    public BigDecimal forwardConvertion(BigDecimal conversionRate, BigDecimal amount) { 
+        BigDecimal result = conversionRate;
         result = amount.multiply(result);
         result = result.setScale(NUMBERS_SCALE, RoundingMode.HALF_UP);
 
-        log.info("{} USD converted to {} {}", amount, result, code);
-
         return result;
     }
 
+
     //convert code -> USD
-    public BigDecimal backwardConvertion(String code, Long time, BigDecimal amount) {
-        List<ConversionRateEntity> request = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
-        
-        if(request.isEmpty()) {
-            ConversionRateResponse entities = getConversionRates();
-            saveConversionRates(entities);
-            
-            request = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
-        }
-        
-        BigDecimal result = request.get(0).getConversionRate();
+    public BigDecimal backwardConvertion(BigDecimal conversionRate, BigDecimal amount) {
+        BigDecimal result = conversionRate;
         result = amount.divide(result, NUMBERS_SCALE, RoundingMode.HALF_UP);
         result = result.setScale(NUMBERS_SCALE, RoundingMode.HALF_UP);
-        
-        log.info("{} {} converted to {} USD", amount, code, result);
         
         return result;
     }
