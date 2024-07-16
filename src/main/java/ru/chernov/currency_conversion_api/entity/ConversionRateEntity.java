@@ -28,6 +28,6 @@ public class ConversionRateEntity {
     @Column
     private Long timeNextUpdate;
 
-    @Column
+    @Column(name = "conversion_rate", precision = 38, scale = 4)
     private BigDecimal conversionRate;
 }
