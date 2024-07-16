@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ConversionRateResponse {
+public class ConversionRateAPIResponse {
     @JsonProperty("result")
     private String result;
 
