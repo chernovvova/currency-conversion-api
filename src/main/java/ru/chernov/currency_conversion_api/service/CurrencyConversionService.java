@@ -18,7 +18,7 @@ import ru.chernov.currency_conversion_api.repository.ConversionRateRepository;
 @Slf4j
 @AllArgsConstructor
 public class CurrencyConversionService {
-    private final int DIVIDE_SCALE = 6;
+    private final int NUMBERS_SCALE = 4;
 
     private final ConversionRateClient conversionRateClient;
     private final ConversionRateRepository conversionRateRepository;
@@ -91,6 +91,7 @@ public class CurrencyConversionService {
     public BigDecimal convertCurrency(String baseCode, String targetCode, BigDecimal amount, Long time) {
         BigDecimal result = new BigDecimal(1);
         result = result.multiply(amount);
+        log.info("Converting {} {} to {}", amount, baseCode, targetCode);
 
         // USD -> target: result = amount * conv_rate 
         // target -> USD: result = amount / conv_rate
@@ -106,6 +107,7 @@ public class CurrencyConversionService {
             result = forwardConvertion(targetCode, time, result);
         }
 
+        log.info("Conversion result: {} {}", result, targetCode);
         return result;
     }
 
@@ -122,7 +124,9 @@ public class CurrencyConversionService {
         
         BigDecimal result = request.get(0).getConversionRate();
         result = amount.multiply(result);
-        
+    
+        log.info("{} USD converted to {} {}", amount, result, code);
+
         return result;
     }
 
@@ -138,7 +142,9 @@ public class CurrencyConversionService {
         }
         
         BigDecimal result = request.get(0).getConversionRate();
-        result = amount.divide(result, DIVIDE_SCALE, RoundingMode.HALF_UP);
+        result = amount.divide(result, NUMBERS_SCALE, RoundingMode.HALF_UP);
+
+        log.info("{} {} converted to {} USD", amount, code, result);
         
         return result;
     }
