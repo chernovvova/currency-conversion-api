@@ -1,6 +1,7 @@
 package ru.chernov.currency_conversion_api.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
@@ -105,10 +106,24 @@ public class CurrencyConversionService {
         return result;
     }
 
+    //covert USD -> code
     public BigDecimal forwardConvertion(String code, Long time, BigDecimal amount) {
-        return amount;
+        List<ConversionRateEntity> request = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
+        
+        if(request.isEmpty()) {
+            ConversionRateResponse entities = getConversionRates();
+            saveConversionRates(entities);
+            
+            request = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
+        }
+        
+        BigDecimal result = request.get(0).getConversionRate();
+        result = amount.multiply(result);
+        
+        return result;
     }
 
+    //convert code -> USD
     public BigDecimal backwardConvertion(String code, Long time, BigDecimal amount) {
         return amount;
     }
