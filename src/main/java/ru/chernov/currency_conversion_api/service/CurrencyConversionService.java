@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -137,16 +138,16 @@ public class CurrencyConversionService {
     }
     
     public ConversionRateEntity findActualConvesionRate(String code, Long time) {
-        List<ConversionRateEntity> request = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
+        Optional<ConversionRateEntity> convertionRate = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
         
-        if(request.isEmpty()) {
+        if(convertionRate.isEmpty()) {
             ConversionRateAPIResponse entities = getConversionRates();
             saveConversionRates(entities);
             
-            request = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
+            convertionRate = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
         }
         
-        return request.get(0);
+        return convertionRate.get();
     }
     //covert USD -> code
     public BigDecimal forwardConvertion(BigDecimal conversionRate, BigDecimal amount) { 
