@@ -19,7 +19,7 @@ import ru.chernov.currency_conversion_api.repository.ConversionRateRepository;
 @Slf4j
 @AllArgsConstructor
 public class CurrencyConversionService {
-    private final int NUMBERS_SCALE = 4;
+    private static final int NUMBERS_SCALE = 4;
 
     private final ExchangeRateAPIClient exchangeRateAPIClient;
     private final ConversionRateRepository conversionRateRepository;
