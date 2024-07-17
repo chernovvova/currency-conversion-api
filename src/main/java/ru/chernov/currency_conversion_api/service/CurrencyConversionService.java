@@ -133,6 +133,7 @@ public class CurrencyConversionService {
         response.setTimeNextUpdate(actualConversionRate.getTimeNextUpdate());
 
         log.info("Conversion result: {} {}", result, targetCode);
+        
         return response;
     }
     
