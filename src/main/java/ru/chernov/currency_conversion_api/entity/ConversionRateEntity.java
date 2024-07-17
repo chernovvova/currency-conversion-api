@@ -22,10 +22,10 @@ public class ConversionRateEntity {
     private String targetCode;
 
     @Id
-    @Column(name = "timeLastUpdate")
+    @Column(name = "time_last_update")
     private Long timeLastUpdate;
 
-    @Column(name = "timeNextUpdate")
+    @Column(name = "time_next_update")
     private Long timeNextUpdate;
 
     @Column(name = "conversion_rate", precision = 38, scale = 4)
