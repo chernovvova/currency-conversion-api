@@ -14,7 +14,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Конвертер валют")
-                        .description("UI конвертера валют")
+                        .description("API конвертера валют")
                         .version("0.0.1"));
     }
 }
