@@ -1,6 +1,6 @@
 package ru.chernov.currency_conversion_api.repository;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,5 +14,5 @@ import ru.chernov.currency_conversion_api.entity.ConversionRateId;
 public interface ConversionRateRepository extends JpaRepository<ConversionRateEntity, ConversionRateId>{
     @Query(value = "SELECT * FROM conversion_rates WHERE target_code = :targetCode AND :time BETWEEN time_last_update AND time_next_update", 
             nativeQuery = true)
-    List<ConversionRateEntity> findByTargetCodeAndTimeInterval(@Param("targetCode")String targetCode, @Param("time") Long time);
+    Optional<ConversionRateEntity> findByTargetCodeAndTimeInterval(@Param("targetCode")String targetCode, @Param("time") Long time);
 } 

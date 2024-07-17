@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.chernov.currency_conversion_api.client.ExchangeRateAPIClient;
@@ -15,6 +16,7 @@ import ru.chernov.currency_conversion_api.dto.CurrencyCodesAPIResponse;
 public class CurrencyCodesService {
     private final ExchangeRateAPIClient exchangeRateAPIClient;
 
+    @Operation(summary = "Получить называния и коды валют")
     public CurrencyCodesAPIResponse getCurrencyCodes() {
         log.info("Getting currency codes from API");
 
