@@ -105,24 +105,24 @@ public class CurrencyConversionService {
         // target -> USD: result = amount / conv_rate
         // base -> target, base -> USD -> target: result = amount / conv_rate1 * conv_rate2
         if(baseCode.equals("USD")) {
-            actualConversionRate = findActualConvesionRate(targetCode, time);
+            actualConversionRate = findActualConversionRate(targetCode, time);
             result = forwardConvertion(actualConversionRate.getConversionRate(), amount);
 
             log.info("{} USD converted to {} {}", amount, result, targetCode);
         }
         else if(targetCode.equals("USD")) {
-            actualConversionRate = findActualConvesionRate(baseCode, time);
+            actualConversionRate = findActualConversionRate(baseCode, time);
             result = backwardConvertion(actualConversionRate.getConversionRate(), amount);
 
             log.info("{} {} converted to {} USD", amount, baseCode, result);
         }
         else {
-            actualConversionRate = findActualConvesionRate(baseCode, time);
+            actualConversionRate = findActualConversionRate(baseCode, time);
             result = backwardConvertion(actualConversionRate.getConversionRate(), amount);
 
             log.info("{} {} converted to {} USD", amount, baseCode, result);
 
-            actualConversionRate = findActualConvesionRate(targetCode, time);
+            actualConversionRate = findActualConversionRate(targetCode, time);
             result = forwardConvertion(actualConversionRate.getConversionRate(), result);
 
             log.info("{} USD converted to {} {}", amount, result, targetCode);
@@ -136,7 +136,7 @@ public class CurrencyConversionService {
         return response;
     }
     
-    public ConversionRateEntity findActualConvesionRate(String code, Long time) {
+    public ConversionRateEntity findActualConversionRate(String code, Long time) {
         Optional<ConversionRateEntity> convertionRate = conversionRateRepository.findByTargetCodeAndTimeInterval(code, time);
         
         if(convertionRate.isEmpty()) {
