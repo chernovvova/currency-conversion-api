@@ -18,14 +18,14 @@ public class ConversionRateEntity {
     private String baseCode;
 
     @Id
-    @Column
+    @Column(name = "target_code")
     private String targetCode;
 
     @Id
-    @Column
+    @Column(name = "timeLastUpdate")
     private Long timeLastUpdate;
 
-    @Column
+    @Column(name = "timeNextUpdate")
     private Long timeNextUpdate;
 
     @Column(name = "conversion_rate", precision = 38, scale = 4)
